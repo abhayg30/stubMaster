@@ -1,0 +1,43 @@
+apiVersion: skaffold/v4beta3
+kind: Config
+manifests:
+  rawYaml:
+    - ./infra/k8s/*
+#we can have single build context in skaffold.yaml file
+build:
+  local:
+    push: false
+  #giving google cloud build to build context for skaffold
+  # googleCloudBuild:
+  #   projectId: ticketing-dev-440902
+  #smaug30 is my username byt nodejs-auth needs to be changed because when google cloud build builds the image it assigns
+  #differnt id/name. GC uses a particular format to name image us.gcr.io/projectId/context
+  artifacts:
+    # - image: us.gcr.io/ticketing-dev-440902/auth
+    - image: smaug30/nodejs-auth
+      context: auth
+      docker:
+        dockerfile: Dockerfile
+      sync:
+        manual:
+          - src: "src/**/*.ts"
+            # dest: . means throw the files in src to running directory of container
+            dest: .
+    - image: smaug30/nodejs-client
+      context: client
+      docker:
+        dockerfile: Dockerfile
+      sync:
+        manual:
+          - src: "**/*.js"
+            # dest: . means throw the files in src to running directory of container
+            dest: .
+    - image: smaug30/nodejs-tickets
+      context: tickets
+      docker:
+        dockerfile: Dockerfile
+      sync:
+        manual:
+          - src: "src/**/*.ts"
+            # dest: . means throw the files in src to running directory of container
+            dest: .
