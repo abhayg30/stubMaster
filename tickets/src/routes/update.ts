@@ -3,6 +3,8 @@ import {body} from 'express-validator';
 import { requireAuth, validateRequest, NotAuthorizedError, NotFoundError } from '@smaugtickets/common';
 import { Ticket } from '../models/ticket';
 import { title } from 'process';
+import { TicketUpdatedPublisher } from '../events/publishers/ticket-updated-publisher';
+import { natsWrapper } from '../nats-wrapper';
 
 const router = express.Router();
 
@@ -29,6 +31,14 @@ router.put('/api/tickets/:id', requireAuth, [
         price: req.body.price
     });
     await ticket.save();
+    new TicketUpdatedPublisher(natsWrapper.client).publish({
+        id: ticket.id,
+        title: ticket.title,
+        price: ticket.price,
+        userId: ticket.userId,
+        version: 1,
+        orderId: "abcd"
+    })
     res.status(200).send(ticket)
 });
 

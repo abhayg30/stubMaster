@@ -16,6 +16,14 @@ spec:
         - name: tickets
           image: smaug30/nodejs-tickets
           env:
+            - name: NATS_URL
+              value: "http://nats-srv:4222"
+            - name: NATS_CLUSTER_ID
+              value: ticketing
+            - name: NATS_CLIENT_ID
+              valueFrom:
+                fieldRef:
+                  fieldPath: metadata.name #this will assign k8s pod name to client id
             - name: MONGO_URI
               value: "mongodb://tickets-mongo-srv:27017/tickets"
             - name: JWT_KEY #this is how the app will access the secret

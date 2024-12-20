@@ -2,6 +2,8 @@ import request from "supertest";
 import { app } from "../../app";
 import mongoose from "mongoose";
 import { title } from "process";
+import { natsWrapper } from "../../nats-wrapper";
+import exp from "constants";
 
 const createTicket = () => {
     return request(app)
@@ -92,4 +94,23 @@ it('updates the tickets successfully on valid inputs', async() => {
     expect(ticketResponse.body.title).toEqual('ticket12345')
     expect(ticketResponse.body.price).toEqual(20)
 
+})
+it('creates an invent after successful call', async() => {
+    const cookie = global.signin();
+    const response = await request(app)
+                    .post('/api/tickets')
+                    .set('Cookie', cookie)
+                    .send({
+                        title: 'ticket123',
+                        price: 20
+                    })
+    await request(app)
+                    .put(`/api/tickets/${response.body.id}`)
+                    .set('Cookie', cookie)
+                    .send({
+                        title: 'ticket12345',
+                        price: 20
+                    })
+                    .expect(200)
+    expect(natsWrapper.client.publish).toHaveBeenCalled();
 })
