@@ -36,3 +36,11 @@ build:
           - src: "src/**/*.ts"
             # dest: . means throw the files in src to running directory of container
             dest: .
+    - image: smaug30/nodejs-orders
+      context: orders
+      docker:
+        dockerfile: Dockerfile
+      sync:
+        manual:
+          - src: "src/**/*.ts"
+            dest: .
