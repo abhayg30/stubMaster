@@ -1,6 +1,6 @@
 import express, {Request, Response, NextFunction} from 'express';
 import {body} from 'express-validator';
-import { requireAuth, validateRequest, NotAuthorizedError, NotFoundError } from '@smaugtickets/common';
+import { requireAuth, validateRequest, NotAuthorizedError, NotFoundError, BadRequestError } from '@smaugtickets/common';
 import { Ticket } from '../models/ticket';
 import { title } from 'process';
 import { TicketUpdatedPublisher } from '../events/publishers/ticket-updated-publisher';
@@ -24,6 +24,9 @@ router.put('/api/tickets/:id', requireAuth, [
     }
     if(ticket.userId !== req.currentUser!.id) {
         throw new NotAuthorizedError()
+    }
+    if(ticket.orderId){
+        throw new BadRequestError('Ticket already reserved. Unable to Edit!!')
     }
 
     ticket.set({
