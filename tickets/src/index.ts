@@ -7,6 +7,7 @@ import { OrderCancelledListener } from "./events/listeners/order-cancelled-liste
 // if no db is present then mongoose will create auth db
 const start = async () => {
   // Do these checks as soon as instance goes live
+  console.log("starting up.....")
   if (!process.env.JWT_KEY) {
     throw new Error("JWT Key not found");
   }
