@@ -1,5 +1,9 @@
 import axios from "axios";
-
+// // We are on the server
+//return axios.create({
+//    baseURL: 'Whatever_your_purchased_domain_is',
+//    headers: req.headers,
+//  });
 const BuildClient = ( { req } ) => {
     if(typeof window === 'undefined'){
         // we are on server! 
