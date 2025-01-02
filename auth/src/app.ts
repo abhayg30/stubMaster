@@ -12,6 +12,8 @@ import { signupRouter } from './routes/signup';
 const app = express();
 app.set('trust proxy', true);
 app.use(json());
+//after purchasing doamin - To disable the HTTPS checking, go to the app.ts file in the auth, orders, tickets, and payments services. 
+// to: cookieSession({ signed: false, secure: false, })
 app.use(
   cookieSession({
     signed: false,
